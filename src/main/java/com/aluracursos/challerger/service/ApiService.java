@@ -11,7 +11,8 @@ import java.io.IOException;
 public class ApiService {
 
     private static final String API_URL = "https://api.exchangeratesapi.io/latest?base=USD";
-    public JsonObject obtenerTasaCambio(String monedaBase) throws IOException { OkHttpClient client = new OkHttpClient();
+    public JsonObject obtenerTasaCambio(String monedaBase) throws IOException {
+        OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder().url(API_URL.replace("USD", monedaBase)).build();
         try (Response response = client.newCall(request).execute()) {
             if (!response.isSuccessful()) throw new IOException("Unexpected code " + response);

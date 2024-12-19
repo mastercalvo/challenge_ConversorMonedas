@@ -3,14 +3,18 @@ package com.aluracursos.challerger.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 public class Moneda {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-
     private Long id;
+    @NotBlank(message = "EL código de la moneda es obligatorio")
     private String codigo;
+    @NotBlank(message = "ELnombre de la moneda es obligatorio")
     private String nombre;
 
     public Moneda(String codigo, String nombre) {
