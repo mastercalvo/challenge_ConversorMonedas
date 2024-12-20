@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 @Component
 public class LoggingAspect {
-    @Before("execution(* com.aluracursos.challenge..*(..))")
+    @Before("execution(* com.aluracursos.challerger..*(..))")
     public void logBefore(JoinPoint joinPoint) {
         System.out.println("Log Before: " + joinPoint.getSignature().getName());
     }

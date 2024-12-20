@@ -12,10 +12,15 @@ public class Moneda {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "EL código de la moneda es obligatorio")
+
+    @NotBlank(message = "El código de la moneda es obligatorio")
     private String codigo;
-    @NotBlank(message = "ELnombre de la moneda es obligatorio")
+
+    @NotBlank(message = "El nombre de la moneda es obligatorio")
     private String nombre;
+
+    public Moneda() {
+    }
 
     public Moneda(String codigo, String nombre) {
         this.codigo = codigo;

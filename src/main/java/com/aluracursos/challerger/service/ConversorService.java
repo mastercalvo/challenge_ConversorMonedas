@@ -1,22 +1,27 @@
 package com.aluracursos.challerger.service;
 
-import com.google.gson.JsonObject;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.io.IOException;
+
 @Service
 public class ConversorService {
+
     @Autowired
     private ApiService apiService;
 
-    public double convertirMonedas(String monedaBase, String monedaDestino, double cantidad) {
-        try { JsonObject jsonObject = apiService.obtenerTasaCambio(monedaBase);
-            double tasaCambio = jsonObject.getAsJsonObject("rates").get(monedaDestino).getAsDouble();
-            return cantidad * tasaCambio;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return 0;
-        }
-    }
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
+    public double obtenerTasaCambio(String monedaOrigen, String monedaDestino) throws IOException {
+        String url = "https://api.exchangerate-api.com/v4/latest/" + monedaOrigen;
+        JsonNode jsonNode = apiService.getJsonData(url);
+        JsonNode tasaNode = jsonNode.get("rates").get(monedaDestino);
+        return tasaNode.asDouble();
+    }
 }

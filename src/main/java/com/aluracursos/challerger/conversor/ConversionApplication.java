@@ -1,4 +1,4 @@
-package com.aluracursos.challerger.coversor;
+package com.aluracursos.challerger.conversor;
 
 import com.aluracursos.challerger.service.ConversionService;
 import org.springframework.boot.CommandLineRunner;
@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
+
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
