@@ -1,68 +1,46 @@
 package com.aluracursos.challerger.service;
 
-import org.springframework.beans.factory.annotation.Value;
+import com.aluracursos.challerger.exception.ErrorHandler;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
-import java.util.Map;
+import java.util.logging.Logger;
 
 @Service
 public class ConversionService {
 
-    @Value("${api.exchangerate.url}")
-    private String apiUrl;
+    private static final Logger logger = Logger.getLogger(ConversionService.class.getName());
 
-    @Value("${api.exchangerate.key}")
-    private String apiKey;
+    @Autowired
+    private RestTemplate restTemplate;
 
-    private final RestTemplate restTemplate;
-
-    public ConversionService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    @Autowired
+    private ErrorHandler errorHandler;
 
     public double obtenerTasaDeConversion(String from, String to) {
+        String url = "https://v6.exchangerate-api.com/v6/2f112ebb1abae4ebacf579b3/pair/" + from + "/" + to;
+        logger.info("URL de la API: " + url);
+
         try {
-            String url = String.format("%s/%s/latest/%s", apiUrl, apiKey, from);
-            ConversionResponse response = restTemplate.getForObject(url, ConversionResponse.class);
+            // Llama a la API y procesa la respuesta
+            String response = restTemplate.getForObject(url, String.class);
+            logger.info("Respuesta de la API: " + response);
 
-            if (response == null || response.getRates() == null) {
-                throw new IllegalArgumentException("Respuesta inválida de la API de tasa de cambio.");
+            // Procesar la respuesta JSON para obtener la tasa de conversión
+            JsonNode jsonResponse = new ObjectMapper().readTree(response);
+            if (jsonResponse.has("conversion_rate")) {
+                return jsonResponse.get("conversion_rate").asDouble();
+            } else {
+                errorHandler.handleApiError("La respuesta de la API no contiene la tasa de conversión esperada.");
             }
 
-            Double rate = response.getRates().getRates().get(to);
-
-            if (rate == null) {
-                throw new IllegalArgumentException("No se encontró la tasa de conversión para la moneda especificada.");
-            }
-
-            return rate;
-        } catch (RestClientException e) {
-            throw new RuntimeException("Error al comunicarse con la API de tasa de cambio.", e);
-        }
-    }
-
-    static class ConversionResponse {
-        private Rates rates;
-
-        public Rates getRates() {
-            return rates;
+        } catch (Exception e) {
+            logger.severe("Error al obtener la tasa de conversión: " + e.getMessage());
+            errorHandler.handleApiError("Error al obtener la tasa de conversión", e);
         }
 
-        public void setRates(Rates rates) {
-            this.rates = rates;
-        }
-
-        static class Rates {
-            private Map<String, Double> rates;
-
-            public Map<String, Double> getRates() {
-                return rates;
-            }
-
-            public void setRates(Map<String, Double> rates) {
-                this.rates = rates;
-            }
-        }
+        return 0.0;
     }
 }

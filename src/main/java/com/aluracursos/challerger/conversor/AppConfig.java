@@ -1,4 +1,4 @@
-package com.aluracursos.conversor;
+package com.aluracursos.challerger.conversor;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
