@@ -19,14 +19,17 @@ public class Moneda {
     @NotBlank(message = "El nombre de la moneda es obligatorio")
     private String nombre;
 
+    // Constructor por defecto
     public Moneda() {
     }
 
+    // Constructor con parámetros
     public Moneda(String codigo, String nombre) {
         this.codigo = codigo;
         this.nombre = nombre;
     }
 
+    // Getters y Setters
     public Long getId() {
         return id;
     }
@@ -49,5 +52,14 @@ public class Moneda {
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
+    }
+
+    @Override
+    public String toString() {
+        return "Moneda{" +
+                "id=" + id +
+                ", codigo='" + codigo + '\'' +
+                ", nombre='" + nombre + '\'' +
+                '}';
     }
 }
